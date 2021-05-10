@@ -1,65 +1,230 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
 
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/7.18.0/firebase-app.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/7.18.0/firebase-auth.js"></script>
-    <script defer src="/__/firebase/7.18.0/firebase-database.js"></script>
-    <script defer src="/__/firebase/7.18.0/firebase-messaging.js"></script>
-    <script defer src="/__/firebase/7.18.0/firebase-storage.js"></script>
-    <!-- initialize the SDK after all desired features are loaded -->
-    <script defer src="/__/firebase/init.js"></script>
+<head>
+  <!-- Bootstrap の css をインポートする。参考 https://getbootstrap.jp/docs/4.5/getting-started/introduction/　-->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
+  <!-- モバイルブラウザでのレイアウトを制御する。参考 https://qiita.com/ryounagaoka/items/045b2808a5ed43f96607 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+  <!-- 検索エンジンに引っかからないようにする。参考 https://ameblo.jp/masa30201/entry-11564231810.html -->
+  <meta name="Keywords" content="norobot">
+
+  <!--  -->
+  <script src="/__/firebase/6.2.0/firebase-app.js"></script>
+  <script src="/__/firebase/6.2.0/firebase-firestore.js"></script>
+  <script src="/__/firebase/init.js"></script>
+
+  <!-- jQuery, Bootstrap の JSライブラリ をロードする。参考 https://getbootstrap.jp/docs/4.5/getting-started/introduction/ -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+    integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
+  </script>
+
+  <!-- android のブラウザを全画面表示にさせる -->
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- iOS のブラウザを全画面表示にさせる -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <title>Snippet Tool</title>
+
+  <!-- CSS の定義 -->
+  <style>
+    /*  文字の色を指定 */
+    .fontBlue {
+      color: blue;
+    }
+
+    .fontRed {
+      color: red;
+    }
+  </style>
+
+</head>
+
+<body>
+  <!-- ナビゲーションバーの配置。参考 https://getbootstrap.jp/docs/4.5/components/navbar/ -->
+  <nav class="navbar navbar-dark bg-primary">
+    <span class="navbar-brand mb-0 h1">ToDo App</span>
+  </nav>
+  <!-- container はグリッドシステムを活用するために必要な定義。参考 https://getbootstrap.jp/docs/4.5/layout/overview/#containers -->
+  <div class="container">
+    <div class="row mx-auto">
+      <div class="col">
+        <form class="form-inline">
+          <!-- グリッドシステムを利用した幅の定義。参考 https://getbootstrap.jp/docs/4.5/layout/grid/ -->
+          <div class="form-group md-6 sm-5 mt-4 mb-4 mr-2 col-xs-10">
+            <input type="text" class="form-control" placeholder="Task Name" id='taskNameForAdd'>
+          </div>
+          <div class="form-group md-6 sm-5 mt-4 mb-4 mr-2">
+            <button type="button" class="btn btn-primary" id="addBtn" onclick="add()">Add</button>
+          </div>
+        </form>
+      </div>
     </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+    <!-- タスクをリスト表示するための場所 -->
+    <div id="list"></div>
 
-        try {
-          let app = firebase.app();
-          let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
-          document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
-        }
+    <!-- Modalの作成。参考 https://getbootstrap.jp/docs/4.5/components/modal/ -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalTitleLabel">Edit</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group mx-sm-3 mb-2">
+              <input type="hidden" id="docId"> <!-- 選択したタスクIDを管理するための部分。画面上では非表示になる。 -->
+              <input type="text" id="taskNameForEdit" placeholder="Task Name">
+              <p id='warningMsg'>本当に削除してもよろしいですか？</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" id="updateBtn" class="btn btn-success" onclick="update()">Update</button>
+            <button type="button" id="deleteBtn" class="btn btn-danger" onclick="del()">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let db = firebase.firestore(); // データベースに関する機能の取得
+
+    // 保持されている全てのタスクデータを取得し、表示する
+    function getAll() {
+      let collection = db.collection("tasks").orderBy('create_at', 'asc'); // 作成された順にデータを並べてタスクデータをデータベースから取得する
+      collection.get().then((querySnapshot) => { // 取得したデータを読み取る
+        $('#list').text('') // タスクをリスト表示するための箇所（<div id="list"></div>）を空文字に設定（初期化）
+
+        // 変数の初期化
+        outputAll = [];
+        num = 0;
+
+        querySnapshot.forEach((doc) => { // 取得したデータそれぞれ1つづつのデータに対して
+          let status = "";
+          if (doc.data()['done']) {
+            status = "checked"
+          } // タスクが完了の状態になっているかの判定
+          // リスト表示するための箇所（ <div id="list"></div> ）にタスクを最下端に追加
+          $('#list').append(' \
+      <div class="row mx-auto"> \
+        <div class="col-sm"> \
+          <form class="form-inline"> \
+            <div class="custom-control custom-checkbox"> \
+              <input value="' + doc.id + '" type="checkbox" class="custom-control-input" id="customCheck' + num +
+            '" ' + status + ' onclick="check(this);"> \
+              <label class="custom-control-label" for="customCheck' + num + '"> \
+                <p>' + doc.data()['name'] + '\
+                  [<a value="' + doc.id + '" data-toggle="modal" data-target="#editModal" onclick="showEditModal(this)"> <span class="fontBlue">edit</span> </a>] \
+                  [<a value="' + doc.id + '" data-toggle="modal" data-target="#editModal" onclick="showDeleteModal(this)"> <span class="fontRed">x</span> </a>] \
+                </p> \
+              </label> \
+            </div> \
+          </form> \
+        </div> \
+      </div>');
+          num++;
+        });
       });
-    </script>
-  </body>
+    }
+    getAll(); // 保持されている全てのタスクデータ取得の初期実行（これがないと、画面を開いたときに何も表示されない）
+
+    // タスクを追加する
+    function add() {
+      let taskNameForAdd = $("#taskNameForAdd").val(); // inputbox に入力された値を取得する
+      if (taskNameForAdd == "") return; // もし、inputbox が空だった場合は関数を終了する
+
+      db.collection("tasks").add({ // データベースにタスクを追加する
+          name: taskNameForAdd, // 入力されたタスク名
+          done: false, // タスクの完了状態は最初は未の状態のため false を指定
+          create_at: new Date() // 現在時刻
+        }).then(function (docRef) { // 成功した場合に実行される箇所
+          getAll(); // 保持されている全てのタスクデータを取得し、表示する
+          $("#taskNameForAdd").val(''); // inputbox に入力された値を空にする
+          console.log("Document written with ID: ", docRef.id);
+        })
+        .catch(function (error) { // 失敗した場合に実行される箇所
+          console.error("Error adding document: ", error);
+        });
+    }
+
+    // タスクを削除する
+    function del() {
+      db.collection("tasks").doc($('#docId').val()).delete() // $('#docId').val() で削除する対象データのIDを取得し、そのデータに対して削除を行う
+        .then(function () { // 成功した場合に実行される箇所
+          console.log("Document successfully deleted!");
+          $('#list').text = "" // タスクをリスト表示するための箇所（<div id="list"></div>）を空文字に設定（初期化）
+          $("#editModal").modal('toggle'); // Modal の表示を OFF にする
+          getAll(); // 保持されている全てのタスクデータを取得し、表示する
+        }).catch(function (error) { // 失敗した場合に実行される箇所
+          console.error("Error removing document: ", error);
+        });
+    }
+
+    // タスクを更新する
+    function update() {
+      let taskNameForEdit = $("#taskNameForEdit").val(); // inputbox に入力された値を取得する
+      if (taskNameForEdit == "") return; //　もし、inputbox が空だった場合は関数を終了する
+
+      collection = db.collection("tasks").doc($('#docId').val())
+    .update({ // $('#docId').val() で削除する対象データのIDを取得し、そのデータに対して更新を行う
+        name: taskNameForEdit, // 入力されたタスク名
+      }).then(function () { // 成功した場合に実行される箇所
+        console.log("Document successfully updated!");
+        $('#list').text = "" // タスクをリスト表示するための箇所（<div id="list"></div>）を空文字に設定（初期化）
+        $("#editModal").modal('toggle'); // Modal の表示を OFF にする
+        getAll(); // 保持されている全てのタスクデータを取得し、表示する
+        $("#taskNameForEdit").val(''); // inputbox に入力された値を空にする
+      }).catch(function (error) { // 失敗した場合に実行される箇所
+        console.error("Error removing document: ", error);
+      });
+    }
+
+    // タスクの完了、未完了を制御する
+    function check(elm) {
+      db.collection("tasks").doc(elm.getAttribute('value'))
+    .update({ // elm.getAttribute('value') で削除する対象データのIDを取得し、そのデータに対して更新を行う
+        done: elm.checked, // 対象要素のチェック状態
+      }).then(function () { // 成功した場合に実行される箇所
+        console.log("Document successfully updated!");
+      }).catch(function (error) { // 失敗した場合に実行される箇所
+        console.error("Error removing document: ", error);
+      });
+    }
+
+    // タスク更新のためのモーダルを表示する
+    function showEditModal(elm) {
+      $('#docId').val(elm.getAttribute('value')); // 選択したタスクデータのID を <input type="hidden" id="docId"> に設定
+      $('#updateBtn').css("display", "inline"); // 更新用のボタンを表示する
+      $('#deleteBtn').css("display", "none"); // 削除用のボタンを非表示にする
+      $('#taskNameForEdit').css("display", "inline"); // タスク名を入力するための inputbox を表示する
+      $('#warningMsg').css("display", "none"); // 削除用の警告メッセージを非表示にする
+    }
+
+    // タスク削除のためのモーダルを表示する
+    function showDeleteModal(elm) {
+      $('#docId').val(elm.getAttribute('value')); // 選択したタスクデータのID を <input type="hidden" id="docId"> に設定
+      $('#updateBtn').css("display", "none"); // 更新用のボタンを非表示にする
+      $('#deleteBtn').css("display", "inline"); // 削除用のボタンを表示する
+      $('#taskNameForEdit').css("display", "none"); // タスク名を入力するための inputbox を非表示にする
+      $('#warningMsg').css("display", "inline"); // 削除用の警告メッセージを表示する
+    }
+  </script>
+</body>
+
 </html>
